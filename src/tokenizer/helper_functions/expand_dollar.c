@@ -44,7 +44,6 @@ char	*expanddollar(const char *str, t_env *env_list)
 	char *f_half;
 
     i = 0;
-    printf("string: %s\n", str);
 	while(str[i] && str[i] != '$')
 		i++;
 	f_half = malloc(i + 1);
@@ -58,6 +57,7 @@ char	*expanddollar(const char *str, t_env *env_list)
 		i++;
 	}
     f_half[i] = '\0';
+    
     printf("PRINT KEY: %s\n first_half: %s\n", key, f_half);
 	if (!get_env_value(env_list, key))
 		return (NULL);

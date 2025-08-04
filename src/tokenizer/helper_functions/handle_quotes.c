@@ -17,9 +17,10 @@ static int isescaped(const char *input, size_t i)
 
 int handle_double_quote(const char *input, size_t *i, t_token **tokens, t_env *env_list)
 {
+    printf("input from double quotes: %s\n", input);
     int start;
     char *word;
-    char *full_phrase;
+    //char *full_phrase;
     start = ++(*i);
     while (input[(*i)])
     {
@@ -29,24 +30,19 @@ int handle_double_quote(const char *input, size_t *i, t_token **tokens, t_env *e
     }
     if (input[*i] != '"')
         return (0);
+    printf("string from index opening quote: %s\n", &input[start]);
     word = ft_strndup(&input[start], *i - start);
     if (!word)
         return (printf("Malloc failed"), 0);
-    printf("WORD: %s\n", word);
-    full_phrase = handle_quoted_esc_chars(word, *i - start);
-    if (!full_phrase)
-        return (0);
-    free(word);
-    printf("phrase: %s\n", full_phrase);
-    char *expanded_val = expanddollar(full_phrase, env_list);
+    printf("WORD: %s?\n", word);
+    //free(word);
+    char *expanded_val = expanddollar(word, env_list);
     if (expanded_val)
     {
         add_token(tokens, create_token(TOKEN_WORD, expanded_val));
         free(expanded_val);
     }
-    else
-        add_token(tokens, create_token(TOKEN_WORD, full_phrase));	
-    free(full_phrase);
+
     (*i)++;
     return (1);
 }
