@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include "env.h"
 
+extern int g_status;
 
 void    minishell_loop(t_env *env_list);
 

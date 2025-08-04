@@ -3,65 +3,122 @@
 #include "../../../includes/tokenizer.h"
 #include "../../../includes/env.h"
 #include <string.h>
+#include <unistd.h>
+ #include <stdlib.h>
 
-static char *slice_key(int i, const char *str)
+static int  num_len(int n)
 {
-    int j = i;
-    char *res;
-    int len;
-    len = 0;
-    while (str[j]) 
+    int len = 0;
+    if (n <= 0)
+        len++; // for '-' or '0'
+    while (n)
     {
-        printf("%c\n", str[j]);
-        if ((str[j] >= 9 && str[j] <= 13) || str[j] == 32)
-            break ;
-        else
-            len++;
-        j++;
+        n /= 10;
+        len++;
     }
-    printf("index : %d len: %d \n", j, len);
-    res = malloc(len + 1);
-    j = 0;
-    int k = i;
-    while(str[k])
+    return (len);
+}
+
+char *ft_itoa(int n)
+{
+    int len = num_len(n);
+    char *str = malloc(len + 1);
+    unsigned int num;
+    
+    if (!str)
+        return NULL;
+    str[len] = '\0';
+    if (n < 0)
     {
-        if ((str[k] >= 9 && str[k] <= 13) || str[k] == 32)
-            break ;
-        else 
-            res[j] = str[k];
-        j++;
-        k++;
+        str[0] = '-';
+        num = -n;
     }
-    res[j] = '\0';
-    printf("RESULT: KEY : %ld\n", strlen(res));
-    return res;
+    else
+        num = n;
+    if (num == 0)
+        str[0] = '0';
+    while (num)
+    {
+        str[--len] = (num % 10) + '0';
+        num /= 10;
+    }
+    return str;
+}
+
+char	*append_pid(char *result)
+{
+	char	*pid_str;
+	char	*tmp;
+
+	pid_str = ft_itoa(getpid());
+	if (!pid_str)
+		return (result);
+	tmp = ft_strjoin(result, pid_str);
+	free(pid_str);
+	free(result);
+	return (tmp);
+}
+
+char	*append_char(char *result, char c)
+{
+	char	buff[2];
+	char	*tmp;
+
+	buff[0] = c;
+	buff[1] = '\0';
+	tmp = ft_strjoin(result, buff);
+	free(result);
+	return (tmp);
+}
+
+char	*append_var(char *result, const char *str, int *i, t_env *env_list)
+{
+	int		start;
+	char	*key;
+	char	*value;
+	char	*tmp;
+
+	start = *i;
+	while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
+		(*i)++;
+	key = ft_strndup(&str[start], *i - start);
+	value = get_env_value(env_list, key);
+	free(key);
+	if (!value)
+		return (result);
+	tmp = ft_strjoin(result, value);
+	free(result);
+	return (tmp);
+}
+
+char	*handle_dollar(char *result, const char *str, int *i, t_env *env_list)
+{
+	(*i)++;
+	if (!str[*i])
+		return (result);
+	if (str[*i] == '$')
+	{
+		(*i)++;
+		return (append_pid(result));
+	}
+	else if (ft_isalpha(str[*i]) || str[*i] == '_')
+		return (append_var(result, str, i, env_list));
+	return (result);
 }
 
 char	*expanddollar(const char *str, t_env *env_list)
 {
-	char *res;
-	int	i;
-	char *f_half;
+	char	*result;
+	int		i;
 
-    i = 0;
-	while(str[i] && str[i] != '$')
-		i++;
-	f_half = malloc(i + 1);
-    i++;
-    char *key = slice_key(i, str);
-    printf("PRINT KEY: %s\n", key);
+	result = ft_strdup("");
 	i = 0;
-	while (str[i] && str[i] != '$')
+	while (str[i])
 	{
-		f_half[i] = str[i];
-		i++;
+		if (str[i] == '$')
+			result = handle_dollar(result, str, &i, env_list);
+		else
+			result = append_char(result, str[i++]);
 	}
-    f_half[i] = '\0';
-    
-    printf("PRINT KEY: %s\n first_half: %s\n", key, f_half);
-	if (!get_env_value(env_list, key))
-		return (NULL);
-    res = ft_strjoin(f_half, get_env_value(env_list, key));
-	printf("result: %s\n", res);
-	return res;
+	return (result);
 }

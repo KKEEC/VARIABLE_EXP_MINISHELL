@@ -6,7 +6,8 @@
         "executor.h": "c",
         "history.h": "c",
         "env.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "sstream": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
