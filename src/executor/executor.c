@@ -65,6 +65,14 @@ char *ft_strncpyandjoin(char *path, int i, int j, char *cmd)
 #include <stdlib.h>
 #include <string.h>
 
+static void free_envp(char **envp)
+{
+    int i = 0;
+    while (envp[i])
+        free(envp[i++]);
+    free(envp);
+}
+
 char *ft_strjoin3(const char *s1, const char *s2, const char *s3)
 {
     if (!s1 || !s2 || !s3)
@@ -110,19 +118,22 @@ static char **env_list_to_array(t_env *env)
 }
 
 ////////
-static void execute_commands(t_ast *ast, t_env **env_list)
+static int execute_commands(t_ast *ast, t_env **env_list)
 {
     pid_t pid = fork();
-
-    if (pid == -1) {
+    int status = 0;
+    if (pid == -1) 
+    {
         perror("fork failed");
-        return;
+        return 1;
     }
 
-    if (pid == 0) {
+    if (pid == 0) 
+    {
         // Child process
         char *path = get_env_value(*env_list, "PATH");
-        if (!path) {
+        if (!path) 
+        {
             fprintf(stderr, "PATH not found\n");
             exit(127);
         }
@@ -135,8 +146,11 @@ static void execute_commands(t_ast *ast, t_env **env_list)
                 full_path = ft_strncpyandjoin(path, i, j, ast->args[0]);
 
                 if (access(full_path, X_OK) == 0)
-                    execve(full_path, ast->args, env_list_to_array(*env_list));
-
+                {
+                    char **envp = env_list_to_array(*env_list);
+                    execve(full_path, ast->args, envp);
+                    free_envp(envp);
+                }
                 free(full_path);
                 i = j + 1;
             }
@@ -147,29 +161,36 @@ static void execute_commands(t_ast *ast, t_env **env_list)
         fprintf(stderr, "minishell: %s: command not found\n", ast->args[0]);
         exit(127);
     }
-    else {
-        // Parent process waits for child
-        int status;
+    else
+    {
         waitpid(pid, &status, 0);
+        if (WIFEXITED(status))
+            status = WEXITSTATUS(status);
+        else
+            status = 1;
     }
+    return status;
 }
 
-void execute_ast(t_ast *ast, t_env **env_list)
+int execute_ast(t_ast *ast, t_env **env_list)
 {
+    int status;
+
+    status = 0;
     if (!ast)
-        return ;
+        return 0;
     if (ast->type == NODE_COMMAND)
     {
         if (!ast->args || !ast->args[0])
-            return ;
+            return 0;
         if (is_builtin(ast->args[0]))
         {
-            execute_builtin(ast, env_list);
+            status = execute_builtin(ast, env_list);
         }
         else
         {
-            execute_commands(ast, env_list);
-            return ;
+            status = execute_commands(ast, env_list);
         }
     }
+    return status;
 }

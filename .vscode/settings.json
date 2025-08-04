@@ -7,7 +7,8 @@
         "history.h": "c",
         "env.h": "c",
         "stdlib.h": "c",
-        "sstream": "c"
+        "sstream": "c",
+        "parser.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

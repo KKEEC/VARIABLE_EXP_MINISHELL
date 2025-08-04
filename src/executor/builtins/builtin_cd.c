@@ -48,7 +48,7 @@ int builtin_cd(char **args, t_env *env_list)
         update_env(&env_list, "OLDPWD", oldpath);
 
     // Optional debug print
-    printf("changed dir from %s to %s\n", oldpath, newpath);
+   // printf("changed dir from %s to %s\n", oldpath, newpath);
     free(newpath);
     return (0);
 }

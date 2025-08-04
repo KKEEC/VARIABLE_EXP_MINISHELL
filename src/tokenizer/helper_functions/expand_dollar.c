@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "../../../includes/minishell.h"
 #include "../../../includes/tokenizer.h"
 #include "../../../includes/env.h"
 #include <string.h>
@@ -101,6 +102,17 @@ char	*handle_dollar(char *result, const char *str, int *i, t_env *env_list)
 		(*i)++;
 		return (append_pid(result));
 	}
+    else if (str[*i] == '?')
+    {
+        (*i)++;
+        char *status_str = ft_itoa(g_status);
+        if (!status_str)
+            return result;
+        char *tmp = ft_strjoin(result, status_str);
+        free(status_str);
+        free(result);
+        return tmp;
+    }
 	else if (ft_isalpha(str[*i]) || str[*i] == '_')
 		return (append_var(result, str, i, env_list));
 	return (result);

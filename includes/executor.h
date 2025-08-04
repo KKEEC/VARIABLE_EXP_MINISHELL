@@ -8,9 +8,9 @@
 #include "env.h"
 
 
-void execute_ast(t_ast *ast, t_env **env_list);
+int execute_ast(t_ast *ast, t_env **env_list);
 
-int execute_command(t_ast *node);
+//int execute_command(t_ast *node);
 
 
 int is_builtin(const char *cmd);

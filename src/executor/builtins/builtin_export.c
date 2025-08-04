@@ -57,6 +57,7 @@ static int case_withargs_export(char **args, t_env **env_list)
     char *equal_sign;
     char *existing;
     char *plus_equal;
+    int status = 0;
 
     i = 1;
     while (args[i])
@@ -75,6 +76,7 @@ static int case_withargs_export(char **args, t_env **env_list)
         if (!is_valid_key(args[i]))
         {
             printf("export: `%s`: not a valid identifier\n", args[i]);
+            status = 1;
             free(key);
             i++;
             continue ;

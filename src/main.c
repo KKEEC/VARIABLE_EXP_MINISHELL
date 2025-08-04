@@ -2,13 +2,14 @@
 #include "../includes/minishell.h"
 #include "../includes/env.h"
 
+int g_status = 0;
+
 int main(int argc, char **argv, char **envp)
 {
     (void)argc;
     (void)argv;
     char    *cwd;
     t_env   *env_list;
-    
     env_list = init_env_list(envp);
     if (!get_env_value(env_list, "PWD"))
     {
