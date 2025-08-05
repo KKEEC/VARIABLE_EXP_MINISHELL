@@ -9,6 +9,7 @@ int ft_isspace(const char c);
 int ft_isschar(const char c);
 int ft_isalpha(const char c);
 int ft_isalnum(const char c);
+void ft_printstderr(const char *str);
 char	*ft_strdup(const char *str);
 char *ft_strndup(const char *str, size_t n);
 int isstrequal(const char *s1, const char *s2);

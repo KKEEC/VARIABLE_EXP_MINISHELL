@@ -1,4 +1,5 @@
 #include "../../../includes/executor.h"
+#include "../../../includes/utils.h"
 
 char    *trimquotes(char *value)
 {
@@ -50,7 +51,6 @@ static int is_valid_key(const char *key)
 
 static int case_withargs_export(char **args, t_env **env_list)
 {
-    printf("Hello from casewithargs export;\n");
     int i;
     char *key;
     char *value;
@@ -75,24 +75,25 @@ static int case_withargs_export(char **args, t_env **env_list)
         
         if (!is_valid_key(args[i]))
         {
-            printf("export: `%s`: not a valid identifier\n", args[i]);
+            ft_printstderr("export: `");
+            ft_printstderr(key);
+            ft_printstderr("`: not a valid identifier\n");
             status = 1;
             free(key);
             i++;
-            continue ;
+            continue;
         }
+
         if (plus_equal)
         {
             value = ft_strdup(plus_equal + 2);
            char *newval = trimquotes(value);
-            ///need to remove "" from the value
-            printf("value: %s\n", newval);
             existing = get_env_value(*env_list, key);
             if (existing)
             {
                 char *new_value = ft_strjoin(existing, newval);
                 //char *new_value = ft_strjoin(existing, value);
-                printf("value: %s\n", new_value);
+                //printf("value: %s\n", new_value);
                 update_env(env_list, key, new_value);
                 free(new_value);
             }
@@ -105,7 +106,7 @@ static int case_withargs_export(char **args, t_env **env_list)
             
             value = ft_strdup(equal_sign + 1);
             char *newval = trimquotes(value);
-            printf("value: %s\n", value);
+           // printf("value: %s\n", value);
             update_env(env_list, key, newval);
             free(value);
         }
@@ -117,7 +118,7 @@ static int case_withargs_export(char **args, t_env **env_list)
         free(key);
         i++;
     }
-    return (0);
+    return (status);
 }
 
 
@@ -197,7 +198,6 @@ static void sort_string_array(char **arr, int size)
 }
 static void  case_noargs_export(t_env *env_list)
 {
-    printf("Hello from casewithargs export;\n");
     t_env   *current;
     int size;
     char **lines;

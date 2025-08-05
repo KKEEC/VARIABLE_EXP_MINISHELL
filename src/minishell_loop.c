@@ -16,7 +16,7 @@ static int execute_pipechaining(t_ast *ast, t_env **env_list)
 static t_ast	*handle_input(t_env *env_list)
 {
 	t_token	*tokens;
-	t_token	*curr;
+	//t_token	*curr;
 	t_ast	*ast;
 	char	*input;
 
@@ -27,15 +27,15 @@ static t_ast	*handle_input(t_env *env_list)
 		add_history(input);
 	tokens = tokenize(input, env_list);
 	if (!tokens)
-		return (printf("minishell: tokenize error\n"), free(input), NULL);
+		return (free(input), NULL);
 	if (is_syntax_error(tokens))
 		return (free_tokens(tokens), free(input), NULL);
-	curr = tokens;
+	/* curr = tokens;
 	while (curr)
 	{
 		printf("Token: type=%d, value='%s'\n", curr->type, curr->value);
 		curr = curr->next;
-	}
+	} */
 	ast = parse_tokens(tokens);
 	free_tokens(tokens);
 	return (ast);
@@ -72,7 +72,7 @@ void	minishell_loop(t_env *env_list)
 			continue ;
 		if (ast)
 		{
-			print_ast(ast, 3);
+			//print_ast(ast, 3);
             if (ast->type != NODE_PIPE && ast->type != NODE_REDIR)
                 status = execute_ast(ast, &env_list);
             else

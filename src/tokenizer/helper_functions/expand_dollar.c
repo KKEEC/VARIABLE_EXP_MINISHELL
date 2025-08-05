@@ -96,7 +96,7 @@ char	*handle_dollar(char *result, const char *str, int *i, t_env *env_list)
 {
 	(*i)++;
 	if (!str[*i])
-		return (result);
+		return (append_char(result, '$'));
 	if (str[*i] == '$')
 	{
 		(*i)++;
@@ -115,7 +115,7 @@ char	*handle_dollar(char *result, const char *str, int *i, t_env *env_list)
     }
 	else if (ft_isalpha(str[*i]) || str[*i] == '_')
 		return (append_var(result, str, i, env_list));
-	return (result);
+	return (append_char(result, '$'));
 }
 
 char	*expanddollar(const char *str, t_env *env_list)

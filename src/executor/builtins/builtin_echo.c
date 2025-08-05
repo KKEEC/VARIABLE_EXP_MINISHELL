@@ -32,7 +32,6 @@ int builtin_echo(char **args)
         newline = 0;
         i++;
     }
-    //print args
     while (args[i])
     {
         printf("%s", args[i]);
