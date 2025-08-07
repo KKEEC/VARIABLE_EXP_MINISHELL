@@ -4,14 +4,7 @@
 #include "../includes/tokenizer.h"
 
 
-static int execute_pipechaining(t_ast *ast, t_env **env_list)
-{
-    (void)ast;
-    (void)env_list;
 
-    printf("...executing pipe\n");
-	return 0;
-}
 
 static t_ast	*handle_input(t_env *env_list)
 {
@@ -72,11 +65,7 @@ void	minishell_loop(t_env *env_list)
 			continue ;
 		if (ast)
 		{
-			//print_ast(ast, 3);
-            if (ast->type != NODE_PIPE && ast->type != NODE_REDIR)
-                status = execute_ast(ast, &env_list);
-            else
-                status = execute_pipechaining(ast, &env_list);
+            status = execute_ast(ast, &env_list);
 			g_status = status;
 			free_ast(ast);
 		}

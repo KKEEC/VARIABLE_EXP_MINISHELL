@@ -21,7 +21,6 @@ char    *trimquotes(char *value)
     int j = 0;
     while (value[i] && i < val_len - 1)
     {
-        printf("value of index to copy: start %d", i);
         temp[j] = value[i];
         i++;
         j++;
@@ -87,7 +86,7 @@ static int case_withargs_export(char **args, t_env **env_list)
         if (plus_equal)
         {
             value = ft_strdup(plus_equal + 2);
-           char *newval = trimquotes(value);
+            char *newval = trimquotes(value);
             existing = get_env_value(*env_list, key);
             if (existing)
             {

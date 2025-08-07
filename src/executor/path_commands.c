@@ -64,7 +64,7 @@ static char **env_list_to_array(t_env *env)
 
     int i = 0;
     while (env) {
-        envp[i] = ft_strjoin3(env->key, "=", env->value); // Make sure to implement or use `asprintf`-like function
+        envp[i] = ft_strjoin3(env->key, "=", env->value); 
         i++;
         env = env->next;
     }
