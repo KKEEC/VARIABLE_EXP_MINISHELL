@@ -10,7 +10,9 @@ int main(int argc, char **argv, char **envp)
     (void)argv;
     char    *cwd;
     t_env   *env_list;
-    env_list = init_env_list(envp);
+    env_list = NULL;
+
+    env_list = init_env_list(envp, &env_list);
     if (!get_env_value(env_list, "PWD"))
     {
         cwd = getcwd(NULL, 0);

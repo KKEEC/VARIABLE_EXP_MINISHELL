@@ -12,7 +12,7 @@ typedef struct s_env
     int     last_ex_status;
 } t_env;
 
-t_env *init_env_list(char **envp);
+t_env *init_env_list(char **envp, t_env **env_list);
 t_env *new_env_node(char *key, char *value);
 void add_env_node(t_env **env_list, t_env *new_node);
 char *get_env_value(t_env *env, const char *key);
