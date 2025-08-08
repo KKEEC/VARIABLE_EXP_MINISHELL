@@ -38,7 +38,6 @@ int builtin_exit(char **args)
         ft_printstderr("exit: too many arguments\n");
         return (1);
     }
-    exit_code = atoi(args[1]);
+    exit_code = ft_atoi(args[1]);
     exit(exit_code);
-
 }

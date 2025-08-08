@@ -19,5 +19,6 @@ char *get_env_value(t_env *env, const char *key);
 void    remove_env_value(t_env **env_list, const char *key);
 void  update_env(t_env **env_list, const char *key, const char *value);
 
+int  env_list_size(t_env *env);
 
 #endif

@@ -39,6 +39,5 @@ int builtin_unset(char **args, t_env **env_list)
         }
         i++;
     }
-
     return status;
 }

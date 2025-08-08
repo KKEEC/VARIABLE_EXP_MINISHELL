@@ -8,8 +8,9 @@ RL_FLAGS = -lreadline
 
 SRC = ./src/main.c ./src/minishell_loop.c \
 ./src/utils/str_utils.c ./src/utils/ft_strchr.c ./src/utils/ft_strjoin.c \
-./src/utils/ft_printstderr.c \
+./src/utils/ft_printstderr.c ./src/utils/ft_strcpy.c \
 ./src/utils/ft_strnstr.c ./src/utils/ft_isschar.c ./src/utils/ft_isspace.c \
+./src/utils/ft_atoi.c ./src/utils/ft_strcmp.c  ./src/utils/sort_string_array.c\
 ./src/tokenizer/tokenizer.c \
 ./src/tokenizer/utils/utils.c \
 ./src/tokenizer/helper_functions/handle_esc_seq.c ./src/tokenizer/helper_functions/handle_special.c \
@@ -24,11 +25,20 @@ SRC = ./src/main.c ./src/minishell_loop.c \
 ./src/executor/builtins/builtin_pwd.c \
 ./src/executor/builtins/builtin_cd.c \
 ./src/executor/builtins/builtin_env.c \
-./src/executor/builtins/builtin_export.c \
+./src/executor/builtins/builtin_export/builtin_export.c \
+./src/executor/builtins/builtin_export/case_noargs_export.c \
+./src/executor/builtins/builtin_export/case_withargs_export.c \
 ./src/executor/builtins/builtin_unset.c \
 ./src/executor/builtins/builtin_exit.c \
+./src/executor/execute_node_type/execute_redirin.c \
+./src/executor/execute_node_type/execute_redirout.c \
+./src/executor/execute_node_type/execute_append.c \
+./src/executor/execute_node_type/execute_heredoc.c \
+./src/executor/execute_node_type/execute_pipe.c \
+./src/executor/executor_utils/is_valid_key.c \
+./src/executor/executor_utils/trimquotes.c \
 ./src/env/init_env_list.c ./src/env/get_env_value.c ./src/env/update_env.c\
-./src/env/remove_env_value.c \
+./src/env/remove_env_value.c  ./src/env/env_list_size.c\
 
 OBJ = $(SRC:.c=.o)
 

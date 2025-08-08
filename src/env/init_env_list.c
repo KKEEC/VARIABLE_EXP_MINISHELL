@@ -9,8 +9,8 @@ t_env	*new_env_node(char *key, char *value)
 		return (NULL);
 	node->key = ft_strdup(key);
 	if (value)
-        node->value = ft_strdup(value);
-    else
+		node->value = ft_strdup(value);
+	else
 		node->value = NULL;
 	node->next = NULL;
 	return (node);

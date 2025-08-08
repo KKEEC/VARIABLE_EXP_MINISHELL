@@ -3,8 +3,18 @@
 #include "../includes/parser.h"
 #include "../includes/tokenizer.h"
 
+void    handle_signal(int sig)
+{
 
+	if (sig == SIGINT)
+	{
+		printf("\n");
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
 
+	}
+}
 
 static t_ast	*handle_input(t_env *env_list)
 {
@@ -32,23 +42,6 @@ static t_ast	*handle_input(t_env *env_list)
 	ast = parse_tokens(tokens);
 	free_tokens(tokens);
 	return (ast);
-}
-///inlude header somewhere
-#include <signal.h>
-//
-
-
-void    handle_signal(int sig)
-{
-
-	if (sig == SIGINT)
-	{
-		printf("\n");
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-
-	}
 }
 
 void	minishell_loop(t_env *env_list)
