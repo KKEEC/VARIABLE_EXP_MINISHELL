@@ -11,7 +11,9 @@ int main(int argc, char **argv, char **envp)
     char    *cwd;
     t_env   *env_list;
     env_list = NULL;
+    int status;
 
+    status = 0;
     env_list = init_env_list(envp, &env_list);
     if (!get_env_value(env_list, "PWD"))
     {
@@ -22,6 +24,9 @@ int main(int argc, char **argv, char **envp)
             free(cwd);
         }
     }
-    minishell_loop(env_list);
-    return (env_list->last_ex_status);
+    minishell_loop(env_list, &status);
+    if (env_list)
+        free_env_list(env_list);
+    rl_clear_history();
+    return (status);
 }

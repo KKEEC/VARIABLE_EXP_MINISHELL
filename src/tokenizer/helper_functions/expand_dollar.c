@@ -53,10 +53,9 @@ char	*append_pid(char *result)
 
 	pid_str = ft_itoa(getpid());
 	if (!pid_str)
-		return (result);
+		return (ft_strdup(result));
 	tmp = ft_strjoin(result, pid_str);
 	free(pid_str);
-	free(result);
 	return (tmp);
 }
 
@@ -68,7 +67,6 @@ char	*append_char(char *result, char c)
 	buff[0] = c;
 	buff[1] = '\0';
 	tmp = ft_strjoin(result, buff);
-	free(result);
 	return (tmp);
 }
 
@@ -86,9 +84,11 @@ char	*append_var(char *result, const char *str, int *i, t_env *env_list)
 	value = get_env_value(env_list, key);
 	free(key);
 	if (!value)
-		return (result);
+	{
+		tmp = ft_strdup(result);
+		return (tmp);
+	}
 	tmp = ft_strjoin(result, value);
-	free(result);
 	return (tmp);
 }
 
@@ -107,10 +107,9 @@ char	*handle_dollar(char *result, const char *str, int *i, t_env *env_list)
         (*i)++;
         char *status_str = ft_itoa(g_status);
         if (!status_str)
-            return result;
+            return (ft_strdup(result));
         char *tmp = ft_strjoin(result, status_str);
         free(status_str);
-        free(result);
         return tmp;
     }
 	else if (ft_isalpha(str[*i]) || str[*i] == '_')
@@ -122,15 +121,24 @@ char	*expanddollar(const char *str, t_env *env_list)
 {
 	char	*result;
 	int		i;
+	char *temp;
 
 	result = ft_strdup("");
 	i = 0;
 	while (str[i])
 	{
 		if (str[i] == '$')
-			result = handle_dollar(result, str, &i, env_list);
+		{
+			temp = handle_dollar(result, str, &i, env_list);
+			free(result);
+			result = temp;
+		}
 		else
-			result = append_char(result, str[i++]);
+		{
+			temp = append_char(result, str[i++]);
+			free(result);
+			result = temp;
+		}
 	}
 	return (result);
 }

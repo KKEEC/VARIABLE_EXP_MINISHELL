@@ -71,22 +71,24 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 
 char	*ft_strdup(const char *str)
 {
-	size_t	len;
-	char	*dup;
+    size_t	len;
+    char	*dup;
     size_t  i;
-
+    
     i = 0;
-	len = ft_strlen(str);
-	dup = malloc(len + 1);
-	if (dup == NULL)
-		return (NULL);
-	while (i < len)
-	{
-		dup[i] = str[i];
-		i++;
-	}
-	dup[i] = '\0';
-	return (dup);
+    if (!str)
+        return NULL;
+    len = ft_strlen(str);
+    dup = malloc(len + 1);
+    if (dup == NULL)
+        return (NULL);
+    while (i < len)
+    {
+        dup[i] = str[i];
+        i++;
+    }
+    dup[i] = '\0';
+    return (dup);
 }
 
 

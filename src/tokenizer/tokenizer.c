@@ -1,23 +1,6 @@
 #include "../../includes/tokenizer.h"
 #include "../../includes/env.h"
 
-char *strappend(char *s1, char *s2)
-{
-    char *res;
-
-    if (!s1 && !s2)
-        return NULL;
-    if (!s1)
-        return s2;
-    if (!s2)
-        return s1;
-
-    res = ft_strjoin(s1, s2);
-    free(s1);
-    free(s2);
-    return res;
-}
-
 
 static void	handle_spec_or_word(const char *input, size_t *i, t_token **tokens)
 {
@@ -61,8 +44,12 @@ static char	*handle_normal_word(const char *input, size_t *i, t_env *env_list)
     }
 
     token_val = ft_strndup(&input[start], *i - start);
+    if(!token_val)
+        return NULL;
     expanded_val = expanddollar(token_val, env_list);
     free(token_val);
+    if(!expanded_val)
+        return NULL;
     return expanded_val;
 }
 
@@ -81,6 +68,7 @@ t_token *tokenize(const char *input, t_env *env_list)
         {
             if (acc) {
                 add_token(&tokens, create_token(TOKEN_WORD, acc));
+                free(acc);
                 acc = NULL;
             }
             i++;
@@ -88,31 +76,53 @@ t_token *tokenize(const char *input, t_env *env_list)
         else if (!ft_isschar(input[i]) && input[i] != '\'' && input[i] != '"')
         {
             char *part = handle_normal_word(input, &i, env_list);
-            acc = strappend(acc, part); // helper to join and free both
+            if (!part)
+            {
+                free(acc);
+                free_tokens(tokens);
+                return NULL;
+        }
+            char *old_acc = acc;
+            if (acc)
+                acc = ft_strjoin(acc, part);
+            else
+                acc = ft_strdup(part);
+            free(old_acc);
+            free(part);
         }
         else if (input[i] == '\'' || input[i] == '"')
         {
             char *part = handle_quotes(input, &i, env_list);
-            if (!part) {
+            if (!part) 
+            {
                 free(acc);
                 free_tokens(tokens);
                 return NULL;
             }
-            acc = strappend(acc, part);
+            char *old_acc = acc;
+            if (acc)
+                acc = ft_strjoin(acc, part);
+            else
+                acc = ft_strdup(part);
+            free(old_acc);
+            free(part); 
         }
         else
         {
             if (acc) {
                 add_token(&tokens, create_token(TOKEN_WORD, acc));
+                free(acc);
                 acc = NULL;
             }
             handle_spec_or_word(input, &i, &tokens);
         }
     }
 
-    if (acc) // flush remaining word
+    if (acc)
+    {
         add_token(&tokens, create_token(TOKEN_WORD, acc));
-
+        free(acc);
+    }
     return tokens;
 }
 

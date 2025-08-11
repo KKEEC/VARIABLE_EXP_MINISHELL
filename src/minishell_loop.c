@@ -25,9 +25,13 @@ static t_ast	*handle_input(t_env *env_list)
 
 	input = readline("minishell$ ");
 	if (!input)
-		exit(env_list->last_ex_status);
-	else if (*input)
-		add_history(input);
+		return NULL;
+	if (*input == '\0')
+	{
+		free(input);
+		return (t_ast *)-1;
+	}
+	add_history(input);
 	tokens = tokenize(input, env_list);
 	if (!tokens)
 		return (free(input), NULL);
@@ -41,26 +45,29 @@ static t_ast	*handle_input(t_env *env_list)
 	} */
 	ast = parse_tokens(tokens);
 	free_tokens(tokens);
+	free(input);
 	return (ast);
 }
 
-void	minishell_loop(t_env *env_list)
+void	minishell_loop(t_env *env_list, int *status)
 {
 	t_ast	*ast;
-	int status;
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, handle_signal);
-	
 	while (1)
 	{
 		ast = handle_input(env_list);
 		if (!ast)
-			continue ;
-		if (ast)
-		{
-            status = execute_ast(ast, &env_list);
-			g_status = status;
-			free_ast(ast);
-		}
+			break ;
+		if (ast == (t_ast *)-1)
+			continue;
+		//print_ast(ast, 2);
+		*status = execute_ast(ast, &env_list);
+		free_ast(ast);
+		if (*status >= 128)  // Exit was called
+        {
+            *status -= 128;  // Get actual exit code
+            break;
+        }
 	}
 }

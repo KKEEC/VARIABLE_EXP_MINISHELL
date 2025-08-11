@@ -35,6 +35,11 @@ t_token *create_token(t_token_type type, const char *input)
         return (NULL);
     token->type = type;
     token->value = ft_strdup(input);
+    if(!token->value)
+    {
+        free(token);
+        return NULL;
+    }
     token->next = NULL;
     return token;
 }

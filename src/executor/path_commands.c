@@ -2,10 +2,13 @@
 
 char *ft_strncpyandjoin(char *path, int i, int j, char *cmd)
 {
-    int k = 0;
+    int k;
     int len;
     char *str1;
+    char *strslash;
+    char *res;
 
+    k = 0;
     len = j - i;
     str1 = malloc(len + 1);
     while(i < j)
@@ -15,8 +18,21 @@ char *ft_strncpyandjoin(char *path, int i, int j, char *cmd)
         i++;
     }
     str1[k] = '\0';
-    char *strslash = ft_strjoin(str1, "/");
-    char *res = ft_strjoin(strslash, cmd);
+    strslash = ft_strjoin(str1, "/");
+    if (!strslash)
+    {
+        free(str1);
+        return NULL;
+    }
+    res = ft_strjoin(strslash, cmd);
+    if (!res)
+    {
+        free(strslash);
+        free(str1);
+        return NULL;
+    }
+    free(str1);
+    free(strslash);
     return (res);
 }
 
@@ -96,12 +112,41 @@ static char *get_command_full_path(char *path, char *cmd)
     return (NULL);
 }
 
+static void handle_exec_error(const char *cmd, char **envp)
+{
+    ft_printstderr("minishell: ");
+    ft_printstderr(cmd);
+    ft_printstderr(": command not found\n");
+    if (envp)
+        free_envp(envp);
+    exit(127);
+}
+
+static int is_path_command(const char *cmd)
+{
+    if (!cmd)
+        return 0;
+    if (cmd[0] == '/')
+        return 1;
+    if (cmd[0] == '.' && cmd[1] == '/')
+        return 1;
+    if (cmd[0] == '.' && cmd[1] == '.' && cmd[2] == '/')
+        return 1;
+    return 0;
+}
+
 static  void execute_child(t_ast *ast, t_env *env_list)
 {
     char *path;
     char *full_path;
     char **envp;
 
+    envp = env_list_to_array(env_list);
+    if (is_path_command(ast->args[0]))
+    {
+        execve(ast->args[0], ast->args, envp);
+        handle_exec_error(ast->args[0], envp);
+    }
     path = get_env_value(env_list, "PATH");
     if (!path)
     {
@@ -110,17 +155,10 @@ static  void execute_child(t_ast *ast, t_env *env_list)
     }
     full_path = get_command_full_path(path, ast->args[0]);
     if (!full_path)
-    {
-        ft_printstderr("minishell: ");
-        ft_printstderr(ast->args[0]);
-        ft_printstderr(": command not found\n");
-        exit(127);
-    }
-    envp = env_list_to_array(env_list);
+        handle_exec_error(ast->args[0], envp);
     execve(full_path, ast->args, envp);
-    free_envp(envp);
     free(full_path);
-    exit(127);
+    handle_exec_error(ast->args[0], envp);
 }
 
 int  execute_commands(t_ast *ast, t_env **env_list)

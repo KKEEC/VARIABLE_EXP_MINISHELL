@@ -23,15 +23,15 @@ int builtin_exit(char **args)
     int exit_code;
 
     exit_code = 0;
-    printf("exit\n");
+    ft_printstderr("exit\n");
     if (!args[1])
-        exit(exit_code);
+        return(128 + exit_code);
     if (!is_number(args[1]))
     {
         ft_printstderr("exit: ");
         ft_printstderr(args[1]);
         ft_printstderr(": numeric argument required\n");
-        exit(2);
+        return(128 + 2);
     }
     if (args[2])
     {
@@ -39,5 +39,5 @@ int builtin_exit(char **args)
         return (1);
     }
     exit_code = ft_atoi(args[1]);
-    exit(exit_code);
+    return (128 + exit_code);
 }

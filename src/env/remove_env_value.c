@@ -26,3 +26,4 @@ void	remove_env_value(t_env **env_list, const char *key)
 		current = current->next;
 	}
 }
+

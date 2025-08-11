@@ -14,7 +14,7 @@ int execute_redirin(t_ast *ast, t_env **env_list)
         perror("Input redirection Error ");
         return (1);
     }
-    stdin_save = dup(STDERR_FILENO);
+    stdin_save = dup(STDIN_FILENO);
     if (stdin_save == -1)
     {
         perror("minishell : dup");
