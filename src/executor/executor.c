@@ -1,5 +1,6 @@
 #include "../../includes/executor.h"
 #include "../../includes/minishell.h"
+#include <stdio.h>
 
 
 int is_builtin(const char *cmd)
@@ -66,5 +67,8 @@ int execute_ast(t_ast *ast, t_env **env_list)
         status = execute_heredoc(ast, env_list);
     else if (ast->type == NODE_PIPE)
         status = execute_pipe(ast, env_list);
+    else
+        status = 1;
+    
     return status;
 }

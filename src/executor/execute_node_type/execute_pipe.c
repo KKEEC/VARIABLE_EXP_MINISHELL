@@ -76,10 +76,16 @@ int execute_pipe(t_ast *ast, t_env **env_list)
     signal(SIGINT, SIG_IGN);
     waitpid(pid1, &status1, 0);
     waitpid(pid2, &status2, 0);
+    
+    // Check if the first process died from SIGPIPE
+    if (WIFSIGNALED(status1) && WTERMSIG(status1) == SIGPIPE)
+    {
+        write(STDERR_FILENO, "Broken pipe\n", 12);
+    }
+    
     if (WIFEXITED(status2))
         return (WEXITSTATUS(status2));
     else if (WIFSIGNALED(status2))
-        return (128 + WTERMSIG(status2));
-    
-    return (g_status);
+        return (128 + WTERMSIG(status2)); 
+    return (0);
 }

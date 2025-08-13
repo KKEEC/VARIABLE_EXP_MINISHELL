@@ -66,8 +66,10 @@ t_token *tokenize(const char *input, t_env *env_list)
     {
         if (ft_isspace(input[i]))
         {
-            if (acc) {
+            if (acc && acc[0] != '\0') {  // Only add if acc is not empty
                 add_token(&tokens, create_token(TOKEN_WORD, acc));
+            }
+            if (acc) {
                 free(acc);
                 acc = NULL;
             }
@@ -109,8 +111,10 @@ t_token *tokenize(const char *input, t_env *env_list)
         }
         else
         {
-            if (acc) {
+            if (acc && acc[0] != '\0') {  // Only add if acc is not empty
                 add_token(&tokens, create_token(TOKEN_WORD, acc));
+            }
+            if (acc) {
                 free(acc);
                 acc = NULL;
             }
@@ -118,11 +122,12 @@ t_token *tokenize(const char *input, t_env *env_list)
         }
     }
 
-    if (acc)
+    if (acc && acc[0] != '\0')  // Only add if acc is not empty
     {
         add_token(&tokens, create_token(TOKEN_WORD, acc));
-        free(acc);
     }
+    if (acc)
+        free(acc);
     return tokens;
 }
 

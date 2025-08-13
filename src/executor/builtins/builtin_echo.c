@@ -1,4 +1,6 @@
 #include "../../../includes/executor.h"
+#include <string.h>
+#include <unistd.h>
 
 static int  is_n_flag(const char *arg)
 {
@@ -34,12 +36,12 @@ int builtin_echo(char **args)
     }
     while (args[i])
     {
-        printf("%s", args[i]);
+        write(STDOUT_FILENO, args[i], strlen(args[i]));
         if (args[i + 1])
-            printf(" ");
+            write(STDOUT_FILENO, " ", 1);
         i++;
     }
     if (newline)
-        printf("\n");
+        write(STDOUT_FILENO, "\n", 1);
     return (0);
 }

@@ -2,6 +2,8 @@
 #include "../includes/minishell.h"
 #include "../includes/parser.h"
 #include "../includes/tokenizer.h"
+#include <stdio.h>
+#include <unistd.h>
 
 void    handle_signal(int sig)
 {
@@ -36,7 +38,7 @@ static t_ast	*handle_input(t_env *env_list)
 	if (!tokens)
 		return (free(input), NULL);
 	if (is_syntax_error(tokens))
-		return (free_tokens(tokens), free(input), NULL);
+		return (free_tokens(tokens), free(input), (t_ast *)-2);
 	/* curr = tokens;
 	while (curr)
 	{
@@ -61,7 +63,13 @@ void	minishell_loop(t_env *env_list, int *status)
 			break ;
 		if (ast == (t_ast *)-1)
 			continue;
-		//print_ast(ast, 2);
+		if (ast == (t_ast *)-2)
+		{
+			*status = 2;  // Syntax error exit code
+			set_shell_status(2);  // Update $? for the shell
+			continue;
+		}
+		//print_ast(ast, 0);
 		*status = execute_ast(ast, &env_list);
 		free_ast(ast);
 		if (*status >= 128)  // Exit was called
@@ -69,5 +77,8 @@ void	minishell_loop(t_env *env_list, int *status)
             *status -= 128;  // Get actual exit code
             break;
         }
+        
+        // Update the shell status for $? expansion (after exit handling)
+		set_shell_status(*status);
 	}
 }

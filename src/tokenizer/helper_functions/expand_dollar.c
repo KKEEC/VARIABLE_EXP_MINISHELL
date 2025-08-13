@@ -105,7 +105,7 @@ char	*handle_dollar(char *result, const char *str, int *i, t_env *env_list)
     else if (str[*i] == '?')
     {
         (*i)++;
-        char *status_str = ft_itoa(g_status);
+        char *status_str = ft_itoa(get_shell_status());
         if (!status_str)
             return (ft_strdup(result));
         char *tmp = ft_strjoin(result, status_str);

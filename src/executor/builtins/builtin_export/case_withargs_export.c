@@ -24,7 +24,7 @@ int case_withargs_export(char **args, t_env **env_list)
         else
             key = ft_strdup(args[i]);
         
-        if (!is_valid_key(args[i]))
+        if (!is_valid_key(key))
         {
             ft_printstderr("export: `");
             ft_printstderr(key);
@@ -60,7 +60,7 @@ int case_withargs_export(char **args, t_env **env_list)
         else
         {
             if (!get_env_value(*env_list, args[i]))
-                update_env(env_list, args[i], NULL);
+                update_env(env_list, key, NULL);
         }
         free(key);
         i++;

@@ -112,14 +112,16 @@ static char *get_command_full_path(char *path, char *cmd)
     return (NULL);
 }
 
-static void handle_exec_error(const char *cmd, char **envp)
+static void handle_exec_error(const char *cmd, char **envp, int error_code, const char *error_msg)
 {
     ft_printstderr("minishell: ");
     ft_printstderr(cmd);
-    ft_printstderr(": command not found\n");
+    ft_printstderr(": ");
+    ft_printstderr(error_msg);
+    ft_printstderr("\n");
     if (envp)
         free_envp(envp);
-    exit(127);
+    exit(error_code);
 }
 
 static int is_path_command(const char *cmd)
@@ -144,8 +146,25 @@ static  void execute_child(t_ast *ast, t_env *env_list)
     envp = env_list_to_array(env_list);
     if (is_path_command(ast->args[0]))
     {
+        // Check if file exists first
+        if (access(ast->args[0], F_OK) == 0)
+        {
+            // File exists, check if it's executable
+            if (access(ast->args[0], X_OK) != 0)
+                handle_exec_error(ast->args[0], envp, 126, "Permission denied");
+        }
         execve(ast->args[0], ast->args, envp);
-        handle_exec_error(ast->args[0], envp);
+        // If execve fails, check what kind of error
+        if (access(ast->args[0], F_OK) == 0)
+        {
+            // File exists but execve failed - could be directory or permission issue
+            if (access(ast->args[0], X_OK) != 0)
+                handle_exec_error(ast->args[0], envp, 126, "Permission denied");
+            else
+                handle_exec_error(ast->args[0], envp, 126, "Is a directory");
+        }
+        else
+            handle_exec_error(ast->args[0], envp, 127, "No such file or directory");
     }
     path = get_env_value(env_list, "PATH");
     if (!path)
@@ -155,10 +174,10 @@ static  void execute_child(t_ast *ast, t_env *env_list)
     }
     full_path = get_command_full_path(path, ast->args[0]);
     if (!full_path)
-        handle_exec_error(ast->args[0], envp);
+        handle_exec_error(ast->args[0], envp, 127, "command not found");
     execve(full_path, ast->args, envp);
     free(full_path);
-    handle_exec_error(ast->args[0], envp);
+    handle_exec_error(ast->args[0], envp, 127, "command not found");
 }
 
 int  execute_commands(t_ast *ast, t_env **env_list)

@@ -135,12 +135,15 @@ t_ast *new_command_node(void)
 t_ast   *parse_command_segment(t_token  **tokens)
 {
     t_ast *cmd;
+    t_ast *command_node;  // Keep track of the actual command node
     int redir_type;
     char *filename;
 
     cmd = new_command_node();
     if (!cmd)
         return (NULL);
+    command_node = cmd;  // Initially, they're the same
+    
     while (*tokens && (*tokens)->type != TOKEN_PIPE)
     {
         if (is_redirection((*tokens)->type))
@@ -150,10 +153,11 @@ t_ast   *parse_command_segment(t_token  **tokens)
             filename = (*tokens)->value;
             *tokens = (*tokens)->next;
             cmd = new_redir_node(redir_type, filename, cmd);
+            // command_node stays pointing to the original command
         }
         else if ((*tokens)->type == TOKEN_WORD)
         {
-            add_arg_to_command(cmd, (*tokens)->value);
+            add_arg_to_command(command_node, (*tokens)->value);  // Add to the actual command
             *tokens = (*tokens)->next;
         }
     }

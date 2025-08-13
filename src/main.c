@@ -2,7 +2,17 @@
 #include "../includes/minishell.h"
 #include "../includes/env.h"
 
-int g_status = 0;
+static int shell_status = 0;
+
+void set_shell_status(int status)
+{
+    shell_status = status;
+}
+
+int get_shell_status(void)
+{
+    return shell_status;
+}
 
 int main(int argc, char **argv, char **envp)
 {
