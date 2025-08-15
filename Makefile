@@ -37,6 +37,8 @@ SRC = ./src/main.c ./src/minishell_loop.c \
 ./src/executor/execute_node_type/execute_pipe.c \
 ./src/executor/executor_utils/is_valid_key.c \
 ./src/executor/executor_utils/trimquotes.c \
+./src/executor/executor_utils/redirection_utils.c \
+./src/executor/executor_utils/redirection_input_utils.c \
 ./src/env/init_env_list.c ./src/env/get_env_value.c ./src/env/update_env.c \
 ./src/env/remove_env_value.c ./src/env/env_list_size.c ./src/env/free_env_list.c \
 

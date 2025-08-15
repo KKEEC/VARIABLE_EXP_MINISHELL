@@ -33,4 +33,20 @@ int execute_heredoc(t_ast *ast, t_env **env_list);
 int is_valid_key(const char *key);
 char    *trimquotes(char *value);
 
+// Shared redirection utilities
+typedef struct s_redir_info {
+    int type;
+    char *filename;
+    int order;
+} t_redir_info;
+
+int collect_all_redirections(t_ast *ast, t_redir_info *redirs, int *count);
+int process_redirections_in_order_basic(t_redir_info *redirs, int count, int *final_fd);
+int process_redirections_in_order_with_input(t_redir_info *redirs, int count, int *final_fd, int *input_fd);
+t_ast *find_command_node_input(t_ast *ast);
+t_ast *find_command_node_output(t_ast *ast);
+int handle_input_file(t_redir_info *redirs, int i, int *error_occurred);
+int handle_output_file(t_redir_info *redirs, int i, int *final_fd);
+int handle_append_file(t_redir_info *redirs, int i, int *final_fd);
+
 #endif
