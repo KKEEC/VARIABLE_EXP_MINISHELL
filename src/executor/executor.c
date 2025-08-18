@@ -40,6 +40,14 @@ int	execute_builtin(t_ast *node, t_env **env_list)
 	return (status);
 }
 
+void	execute_command_node(t_ast *ast, t_env **env_list, int *status)
+{
+	if (is_builtin(ast->args[0]))
+		*status = execute_builtin(ast, env_list);
+	else
+		*status = execute_commands(ast, env_list);
+}
+
 int	execute_ast(t_ast *ast, t_env **env_list)
 {
 	int	status;
@@ -51,10 +59,7 @@ int	execute_ast(t_ast *ast, t_env **env_list)
 	{
 		if (!ast->args || !ast->args[0])
 			return (0);
-		if (is_builtin(ast->args[0]))
-			status = execute_builtin(ast, env_list);
-		else
-			status = execute_commands(ast, env_list);
+		execute_command_node(ast, env_list, &status);
 	}
 	else if (ast->type == NODE_REDIR && ast->redir_type == TOKEN_REDIR_IN)
 		status = execute_redirin(ast, env_list);

@@ -1,4 +1,3 @@
-
 #include "../../../includes/executor.h"
 
 int	handle_input_file(t_redir_info *redirs, int i, int *error_occurred)

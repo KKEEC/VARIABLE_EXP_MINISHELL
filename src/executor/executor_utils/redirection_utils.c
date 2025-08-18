@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   redirection_utils.c                                :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: your_user <your_email@student.42.fr>      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/15 00:00:00 by your_user        #+#    #+#             */
-/*   Updated: 2025/08/15 00:00:00 by your_user       ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../../../includes/executor.h"
 
 int	collect_all_redirections(t_ast *ast, t_redir_info *redirs, int *count)

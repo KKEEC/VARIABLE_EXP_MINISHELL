@@ -13,6 +13,18 @@ int is_builtin(const char *cmd);
 int execute_builtin(t_ast *node, t_env **env_list);
 int execute_commands(t_ast *ast, t_env **env_list);
 
+// String utilities
+char	*ft_strncpyandjoin(char *path, int i, int j, char *cmd);
+char	*ft_strjoin3(const char *s1, const char *s2, const char *s3);
+
+// Environment utilities
+void	free_envp(char **envp);
+char	**env_list_to_array(t_env *env);
+
+// Command utilities
+char	*get_command_full_path(char *path, char *cmd);
+void	handle_exec_error(const char *cmd, char **envp, int error_code, const char *error_msg);
+int	is_path_command(const char *cmd);
 
 int builtin_echo(char **args);
 int builtin_pwd(void);
@@ -21,6 +33,7 @@ int builtin_env(t_env *env_list, char **args);
 int builtin_export(char **args, t_env **env_list);
 void  case_noargs_export(t_env *env_list);
 int case_withargs_export(char **args, t_env **env_list);
+void	print_err_key(char *key);
 int builtin_unset(char **args, t_env **env_list);
 int builtin_exit(char **args);
 

@@ -31,13 +31,25 @@ static char	*format_export_line(t_env *entry)
 	return (line);
 }
 
+static void	print_free_str_arr(char **arr)
+{
+	int	i;
+
+	i = 0;
+	while (arr[i])
+	{
+		printf("%s\n", arr[i]);
+		free(arr[i]);
+		i++;
+	}
+}
+
 void	case_noargs_export(t_env *env_list)
 {
 	t_env	*current;
 	int		size;
 	char	**lines;
 	int		i;
-	int		j;
 
 	size = env_list_size(env_list);
 	current = env_list;
@@ -50,15 +62,6 @@ void	case_noargs_export(t_env *env_list)
 	}
 	lines[i] = NULL;
 	sort_string_array(lines, size);
-	j = 0;
-	while (j < size)
-	{
-		if (lines[j])
-		{
-			printf("%s\n", lines[j]);
-			free(lines[j]);
-		}
-		j++;
-	}
+	print_free_str_arr(lines);
 	free(lines);
 }
