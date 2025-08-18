@@ -24,7 +24,7 @@ typedef struct s_token
 }   t_token;
 
 // tokenizer.c
-t_token *tokenize(const char *input, t_env *env_list);
+t_token *tokenize(const char *input, t_env *env_list, int *status);
 
 // utils/
 void    free_tokens(t_token *head);
@@ -32,11 +32,11 @@ t_token *create_token(t_token_type type, const char *input);
 void    add_token(t_token **head, t_token *new_token);
 
 // helper functions/
-char	*expanddollar(const char *str, t_env *env_list);
+char	*expanddollar(const char *str, t_env *env_list, int *status);
 void   handle_special(const char *input, size_t *i, t_token **tokens);
 int    handle_word(const char *input, size_t *i, t_token **tokens);
 char    *handle_single_quote(const char *input, size_t *i);
-char    *handle_double_quote(const char *input, size_t *i, t_env *env_list);
+char    *handle_double_quote(const char *input, size_t *i, t_env *env_list, int *status);
 char *handle_quoted_esc_chars(const char *src, size_t len);
 char *handle_unquoted_esc_chars(const char *src, size_t len);
 

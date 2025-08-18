@@ -70,17 +70,18 @@ char	*append_char(char *result, char c)
 	return (tmp);
 }
 
-char	*append_var(char *result, const char *str, int *i, t_env *env_list)
+char	*append_var(char *result, char **tstr, t_env *env_list)
 {
-	int		start;
+	char		*start;
 	char	*key;
 	char	*value;
 	char	*tmp;
 
-	start = *i;
-	while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
-		(*i)++;
-	key = ft_strndup(&str[start], *i - start);
+	start = *tstr;
+	while (**tstr && (ft_isalnum(**tstr) || **tstr == '_'))
+		(*tstr)++;
+	key = ft_strndup(start, *tstr - start);
+	//printf("Key: %s\n", key);
 	value = get_env_value(env_list, key);
 	free(key);
 	if (!value)
@@ -92,52 +93,55 @@ char	*append_var(char *result, const char *str, int *i, t_env *env_list)
 	return (tmp);
 }
 
-char	*handle_dollar(char *result, const char *str, int *i, t_env *env_list)
+char	*handle_dollar(char *result, char **tstr, int *status, t_env *env_list)
 {
-	(*i)++;
-	if (!str[*i])
+	(*tstr)++;
+	//printf("Handling dollar: %s\n", *tstr);
+	if (!**tstr)
 		return (append_char(result, '$'));
-	if (str[*i] == '$')
+	if (**tstr == '$')
 	{
-		(*i)++;
+		(*tstr)++;
 		return (append_pid(result));
 	}
-    else if (str[*i] == '?')
+    else if (**tstr == '?')
     {
-        (*i)++;
-        char *status_str = ft_itoa(get_shell_status());
+        (*tstr)++;
+        char *status_str = ft_itoa(*status);
         if (!status_str)
             return (ft_strdup(result));
         char *tmp = ft_strjoin(result, status_str);
         free(status_str);
         return tmp;
     }
-	else if (ft_isalpha(str[*i]) || str[*i] == '_')
-		return (append_var(result, str, i, env_list));
+	else if (ft_isalpha(**tstr) || **tstr == '_')
+		return (append_var(result, tstr, env_list));
 	return (append_char(result, '$'));
 }
 
-char	*expanddollar(const char *str, t_env *env_list)
+char	*expanddollar(const char *str, t_env *env_list, int *status)
 {
-	char	*result;
-	int		i;
+	char	*result;;
 	char *temp;
+	char *tstr;
 
+	tstr = (char *)str;
 	result = ft_strdup("");
-	i = 0;
-	while (str[i])
+	//printf("Expanding dollar in: %s %s\n", tstr, str);
+	while (*tstr)
 	{
-		if (str[i] == '$')
+		if (*tstr == '$')
 		{
-			temp = handle_dollar(result, str, &i, env_list);
+			temp = handle_dollar(result, &tstr, status, env_list);
 			free(result);
 			result = temp;
 		}
 		else
 		{
-			temp = append_char(result, str[i++]);
+			temp = append_char(result, *tstr);
 			free(result);
 			result = temp;
+			tstr++;
 		}
 	}
 	return (result);

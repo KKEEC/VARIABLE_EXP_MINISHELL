@@ -16,10 +16,7 @@
 # include <readline/history.h>
 #include "env.h"
 
-extern int g_status;
 
 void    minishell_loop(t_env *env_list, int *status);
-void    set_shell_status(int status);
-int     get_shell_status(void);
 
 #endif

@@ -15,7 +15,7 @@ static int isescaped(const char *input, size_t i)
         return (1);
 }
 
-char *handle_double_quote(const char *input, size_t *i, t_env *env_list)
+char *handle_double_quote(const char *input, size_t *i, t_env *env_list, int *status)
 {
     int start;
     char *word;
@@ -34,7 +34,7 @@ char *handle_double_quote(const char *input, size_t *i, t_env *env_list)
     (*i)++;
     if (!word)
         return (NULL);
-    expanded_val = expanddollar(word, env_list);
+    expanded_val = expanddollar(word, env_list, status);
     free(word);
     return (expanded_val);
 }

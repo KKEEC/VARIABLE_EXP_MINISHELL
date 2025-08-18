@@ -11,17 +11,17 @@ static void	handle_spec_or_word(const char *input, size_t *i, t_token **tokens)
 	(*i)++;
 }
 
-static char *handle_quotes(const char *input, size_t *i, t_env *env_list)
+static char *handle_quotes(const char *input, size_t *i, t_env *env_list, int *status)
 {
     if (input[*i] == '\'')
         return handle_single_quote(input, i); // no env needed
     else if (input[*i] == '"')
-        return handle_double_quote(input, i, env_list);
+        return handle_double_quote(input, i, env_list, status);
     return NULL;
 }
 
 
-static char	*handle_normal_word(const char *input, size_t *i, t_env *env_list)
+static char	*handle_normal_word(const char *input, size_t *i, t_env *env_list, int *status)
 {
 	size_t	start = *i;
 	char	*token_val;
@@ -46,14 +46,14 @@ static char	*handle_normal_word(const char *input, size_t *i, t_env *env_list)
     token_val = ft_strndup(&input[start], *i - start);
     if(!token_val)
         return NULL;
-    expanded_val = expanddollar(token_val, env_list);
+    expanded_val = expanddollar(token_val, env_list, status);
     free(token_val);
     if(!expanded_val)
         return NULL;
     return expanded_val;
 }
 
-t_token *tokenize(const char *input, t_env *env_list)
+t_token *tokenize(const char *input, t_env *env_list, int *status)
 {
     t_token *tokens = NULL;
     size_t i = 0;
@@ -77,7 +77,7 @@ t_token *tokenize(const char *input, t_env *env_list)
         }
         else if (!ft_isschar(input[i]) && input[i] != '\'' && input[i] != '"')
         {
-            char *part = handle_normal_word(input, &i, env_list);
+            char *part = handle_normal_word(input, &i, env_list, status);
             if (!part)
             {
                 free(acc);
@@ -94,7 +94,7 @@ t_token *tokenize(const char *input, t_env *env_list)
         }
         else if (input[i] == '\'' || input[i] == '"')
         {
-            char *part = handle_quotes(input, &i, env_list);
+            char *part = handle_quotes(input, &i, env_list, status);
             if (!part) 
             {
                 free(acc);

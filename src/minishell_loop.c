@@ -16,7 +16,7 @@ void	handle_signal(int sig)
 	}
 }
 
-static t_ast	*handle_input(t_env *env_list)
+static t_ast	*handle_input(t_env *env_list, int *status)
 {
 	t_token	*tokens;
 	t_ast	*ast;
@@ -31,7 +31,7 @@ static t_ast	*handle_input(t_env *env_list)
 		return ((t_ast *)-1);
 	}
 	add_history(input);
-	tokens = tokenize(input, env_list);
+	tokens = tokenize(input, env_list, status);
 	if (!tokens)
 		return (free(input), NULL);
 	if (is_syntax_error(tokens))
@@ -50,7 +50,7 @@ void	minishell_loop(t_env *env_list, int *status)
 	signal(SIGINT, handle_signal);
 	while (1)
 	{
-		ast = handle_input(env_list);
+		ast = handle_input(env_list, status);
 		if (!ast)
 			break ;
 		if (ast == (t_ast *)-1)
@@ -58,7 +58,6 @@ void	minishell_loop(t_env *env_list, int *status)
 		if (ast == (t_ast *)-2)
 		{
 			*status = 2;
-			set_shell_status(2);
 			continue ;
 		}
 		*status = execute_ast(ast, &env_list);
@@ -68,6 +67,5 @@ void	minishell_loop(t_env *env_list, int *status)
 			*status -= 128;
 			break ;
 		}
-		set_shell_status(*status);
 	}
 }
